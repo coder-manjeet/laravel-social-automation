@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            $table->boolean('share_to_social')->default(true)->after('approved_at');
+            $table->json('social_captions')->nullable()->after('share_to_social');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropColumn(['share_to_social', 'social_captions']);
+        });
+    }
+};

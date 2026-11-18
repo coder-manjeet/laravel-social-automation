@@ -1,0 +1,64 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Add the fields needed by the MCP drafting and admin review workflow.
+     */
+    public function up(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            $table->string('source', 20)->default('manual')->after('status');
+            $table->text('review_notes')->nullable()->after('source');
+            $table->string('focus_keyword', 120)->nullable()->after('review_notes');
+            $table->json('faq')->nullable()->after('focus_keyword');
+
+            $table->foreignId('author_id')
+                ->nullable()
+                ->after('user_id')
+                ->constrained('users')
+                ->nullOnDelete();
+
+            $table->foreignId('approved_by')
+                ->nullable()
+                ->after('author_id')
+                ->constrained('users')
+                ->nullOnDelete();
+
+            $table->timestamp('approved_at')->nullable()->after('approved_by');
+
+            $table->index(['status', 'scheduled_at']);
+        });
+
+        // Existing posts were written by their creator, so use that as the byline.
+        DB::table('posts')
+            ->whereNull('author_id')
+            ->update(['author_id' => DB::raw('user_id')]);
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropIndex(['status', 'scheduled_at']);
+
+            $table->dropConstrainedForeignId('approved_by');
+            $table->dropConstrainedForeignId('author_id');
+
+            $table->dropColumn([
+                'source',
+                'review_notes',
+                'focus_keyword',
+                'faq',
+                'approved_at',
+            ]);
+        });
+    }
+};

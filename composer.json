@@ -1,0 +1,36 @@
+{
+    "name": "coder-manjeet/laravel-social-automation",
+    "authors": [
+        {
+            "name": "Manjeet Singh",
+            "email": "codermanjeet@gmail.com",
+            "homepage": "https://coder-manjeet.github.io",
+            "role": "Developer"
+        }
+    ],
+    "description": "Blog MCP connector and social automation for Laravel applications.",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^13.7",
+        "laravel/mcp": "^0.7.2",
+        "spatie/laravel-medialibrary": "^11.23",
+        "spatie/laravel-package-tools": "^1.16",
+        "symfony/html-sanitizer": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "CoderManjeet\\SocialAutomation\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CoderManjeet\\SocialAutomation\\SocialAutomationServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
